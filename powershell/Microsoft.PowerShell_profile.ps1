@@ -1,10 +1,26 @@
-# Alias
-Set-Alias notepad D:\Notepad2_zh-Hans_x64_v4.22.01r4056\Notepad2.exe
-Set-Alias nc E:\Download\netcat-win32-1.12\nc64.exe
-Set-Alias codex D:\Programs\VSCodeInsiders\bin\code-insiders.cmd
-Set-Alias hugo D:\Programs\hugo_0.93.2_Windows-64bit\hugo.exe
-Set-Alias nvim "D:\Programs\Neovim\bin\nvim.exe"
-Set-Alias upx "D:\Programs\upx-3.96-win64\upx.exe"
+
+Set-Alias open explorer
+Set-Alias grep rg
+Set-Alias notepad "D:\Notepad3_6.23.203.2_x64_Portable\Notepad3.exe"
+
+Invoke-Expression (& { (zoxide init powershell | Out-String) })
+Invoke-Expression (&starship init powershell)
+
+
+
+Set-Alias mysql "E:\Programs\MySQL\MySQL Server 8.0\bin\mysql.exe"
+# 通用函数，接收驱动器字母作为参数
+function Go-Drive {
+    param (
+        [string]$driveLetter
+    )
+    Set-Location "${driveLetter}:\"
+}
+
+# 使用函数来创建别名，导航到不同的驱动器
+function c { Go-Drive "C" }
+function d { Go-Drive "D" }
+function e { Go-Drive "E" }
 
 Function ipy {python -m IPython}
 # Get process by port
@@ -32,76 +48,27 @@ Function task{
 function gcl {
 	git clone --recursive $args
 }
+function extract{
+	C:\Users\15924\Downloads\Compressed\RePKG\RePKG.exe extract scene.pkg
+}
 # New File
 function touch {New-Item "$args" -ItemType File}
 # Terminal proxy
-function setproxy {netsh winhttp set proxy "127.0.0.1:7890"}
+function setproxy {
+$env:HTTP_PROXY="http://127.0.0.1:7897"
+$env:HTTPS_PROXY="http://127.0.0.1:7897"
+
+}
 # Show proxy info
 function showproxy {netsh winhttp show proxy}
-# Edit powershell profile
-function profile {
-  notepad $profile
-}
-# Function example：Temperature
-function 2C {
-  param (
-      [Parameter()]
-      [Alias('Temp')]
-      [int]
-      $Temperature
-  )
 
-  ($Temperature - 30) / 2
-}
-# Lookup english word 
-function dict{
-	param (
-      [Parameter()]
-      [Alias('Temp')]
-      [String]
-      $word
-      )
-      python E:\vscode-python\mdict-query\cmd.py $word	
-}
-# Get a fact from api
-function fact {
-  irm -Uri https://uselessfacts.jsph.pl/random.json?language=en | Select -ExpandProperty text
-}
-# random joke from api
-function joke {
-  irm https://icanhazdadjoke.com/ -Headers @{accept = 'application/json'} | select -ExpandProperty joke
-}
-
-function lf(){
-	python e:/vscode-python/file-size/list-size.py
-}
 
 # 更改默认ls行为，网格展示文件
 Remove-Alias -Name ls
-function ls {
-	Get-ChildItem | Format-Wide
-}
-# Terminal Icons color
-function set-color(){
-	Add-TerminalIconsColorTheme -Path C:\Users\roy\.config\colorTheme.psd1
-	Set-TerminalIconsTheme -ColorTheme royops
-}
+Set-Alias ls lsd
 
 
 
-# 快速跳转zoxide配置
-# For zoxide v0.8.0+
-Invoke-Expression (& {
-    $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
-    (zoxide init --hook $hook powershell | Out-String)
-})
-
-
-# 启用starship
-Invoke-Expression (&starship init powershell)
-
-# 导入图标
-Import-Module -Name Terminal-Icons
 
 # 设置自动补全
 Import-Module PSReadLine
@@ -119,7 +86,7 @@ Set-PSReadlineOption -Color @{
     "Operator" = "`e[31m"               # Red
     "Variable" = "`e[36m"               # Cyan
     #"Command" = "`e[38;2;219;112;147m"            # Gneen
-    "Command" = "`e[38;2;219;112;147;1;3m"            # Gneen
+    "Command" = "`e[38;2;219;112;147;1m"            # Gneen
     #"Command" = "e[1m"            # Gneen
     #"Parameter" = "`e[34;4m"              # Red
     "Parameter" = "`e[38;2;135;236;175;4m"             # Red
@@ -128,6 +95,7 @@ Set-PSReadlineOption -Color @{
     "Member" = "`e[37m"                 # White
     "InlinePrediction" = '#757679'       # Bright black
 }
+
 
 # This custom binding makes `RightArrow` behave similarly - accepting the next word instead of the entire suggestion text.
 Set-PSReadLineKeyHandler -Key RightArrow `
@@ -190,13 +158,3 @@ Set-PSReadLineKeyHandler -Key Ctrl+LeftArrow `
     [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
 }
 
-# Import the Chocolatey Profile that contains the necessary code to enable
-# tab-completions to function for `choco`.
-# Be aware that if you are missing these lines from your profile, tab completion
-# for `choco` will not function.
-# See https://ch0.co/tab-completion for details.
-$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-if (Test-Path($ChocolateyProfile)) {
-  Import-Module "$ChocolateyProfile"
-}
-cls
