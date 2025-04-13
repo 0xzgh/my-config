@@ -1,0 +1,29 @@
+
+format = """$character$conda$directory$git_branch[✘](bold yellow) """
+
+add_newline = true
+
+
+
+[directory]
+truncation_length = 1
+style = "bold cyan"
+format = "[$path]($style) "
+
+[directory.substitutions]
+'C:/' = 'C'
+'D:/' = 'D'
+'E:/' = 'E'
+
+
+
+[git_branch]
+format = '[git:\(](bold blue)[$branch](bold red)[\)](bold blue) '
+
+[character]
+success_symbol = "[➜ ](green)"
+error_symbol = "[➜ ](red)"
+
+[conda]
+style = "bold white"
+format = "[\\($environment\\)]($style) "
